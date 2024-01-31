@@ -29,7 +29,7 @@ data class PuzzleState @Throws(IllegalArgumentException::class) constructor(
             tiles.chunked(matrixSize)
                 .joinToString(separator = "\n") { row ->
                     row.joinToString(separator = "") { tile ->
-                        "[${tile.toString().padStart(maxTileLength)}]"
+                        "[${tile.toString().padStart(length = maxTileLength)}]"
                     }
                 }
     }
