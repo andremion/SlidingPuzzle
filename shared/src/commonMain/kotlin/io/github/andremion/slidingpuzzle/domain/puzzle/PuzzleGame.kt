@@ -158,7 +158,6 @@ fun PuzzleState.inversionsCount(): Int {
 }
 
 fun PuzzleState.isSolvable(goal: PuzzleState): Boolean {
-    println("matrixSize: $matrixSize")
     val startInversionsCount = inversionsCount()
     println("startInversionsCount: $startInversionsCount")
     val goalInversionsCount = goal.inversionsCount()

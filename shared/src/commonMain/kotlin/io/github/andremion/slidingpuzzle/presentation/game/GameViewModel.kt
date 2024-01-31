@@ -2,6 +2,8 @@ package io.github.andremion.slidingpuzzle.presentation.game
 
 import io.github.andremion.slidingpuzzle.domain.puzzle.Puzzle3x3States
 import io.github.andremion.slidingpuzzle.domain.puzzle.PuzzleGame
+import io.github.andremion.slidingpuzzle.domain.puzzle.PuzzleState
+import io.github.andremion.slidingpuzzle.domain.puzzle.getSolvableStates
 import io.github.andremion.slidingpuzzle.domain.time.Timer
 import io.github.andremion.slidingpuzzle.domain.time.formatTime
 import kotlinx.coroutines.delay

@@ -85,10 +85,7 @@ private fun Timer(
         initialValue = 1f,
         targetValue = if (blinking) 0.2f else 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 800,
-                easing = LinearEasing
-            ),
+            animation = tween(durationMillis = 800, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )
