@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
 class PuzzleGame(
-    private val initialState: PuzzleState
+    initialState: PuzzleState
 ) {
     var state: PuzzleState = initialState
         private set
@@ -29,7 +29,7 @@ class PuzzleGame(
     @Throws(CancellationException::class, IllegalStateException::class)
     suspend fun solve(): List<PuzzleState> =
         withContext(Dispatchers.Default) {
-            val solvableStates = initialState.getSolvableStates()
+            val solvableStates = state.getSolvableStates()
             println("solvableStates: $solvableStates")
             if (solvableStates.isEmpty()) {
                 error("Puzzle is not solvable")
@@ -39,7 +39,7 @@ class PuzzleGame(
                 heuristics = { data -> data.heuristic(solvableStates.first()) },
                 successors = PuzzleState::getSuccessors
             ).performSearch(
-                start = initialState,
+                start = state,
                 goal = solvableStates.first(),
             )
 

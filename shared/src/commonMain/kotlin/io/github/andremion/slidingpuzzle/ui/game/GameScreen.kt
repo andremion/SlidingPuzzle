@@ -122,7 +122,8 @@ private fun ScreenContent(
         ) {
             PuzzleDashboard(
                 moves = uiState.moves,
-                timer = uiState.timer
+                timer = uiState.timer,
+                blinkTimer = uiState.blinkTimer
             )
             PuzzleBoard(
                 modifier = Modifier

@@ -21,10 +21,12 @@ class GameViewModel : ViewModel() {
     private var game = PuzzleGame(initialState = Puzzle3x3States.Shuffled)
     private val timer = Timer(coroutineScope = viewModelScope)
 
-    private val initialState = GameUiState(
-        tiles = game.state.transform(),
-        columns = game.state.matrixSize,
-    )
+    private val initialState: GameUiState
+        get() = GameUiState(
+            moves = game.moves.toString(),
+            tiles = game.state.transform(),
+            columns = game.state.matrixSize,
+        )
     private val mutableState = MutableStateFlow(initialState)
     val state: StateFlow<GameUiState> = mutableState
         .stateIn(
@@ -52,7 +54,8 @@ class GameViewModel : ViewModel() {
                 timer.pause()
                 mutableState.update { uiState ->
                     uiState.copy(
-                        fab = GameUiState.Fab.Resume
+                        fab = GameUiState.Fab.Resume,
+                        blinkTimer = true
                     )
                 }
             }
@@ -64,14 +67,7 @@ class GameViewModel : ViewModel() {
             GameUiEvent.ReplayClick -> {
                 timer.stop()
                 game = PuzzleGame(initialState = Puzzle3x3States.Shuffled)
-                mutableState.update { uiState ->
-                    uiState.copy(
-                        moves = game.moves.toString(),
-                        timer = "00:00:00",
-                        tiles = game.state.transform(),
-                        fab = null
-                    )
-                }
+                mutableState.update { initialState }
             }
 
             GameUiEvent.SolveClick -> {
@@ -97,7 +93,8 @@ class GameViewModel : ViewModel() {
             DateTimePeriod().toString()
             uiState.copy(
                 timer = duration.formatTime(),
-                fab = GameUiState.Fab.Pause
+                fab = GameUiState.Fab.Pause,
+                blinkTimer = false
             )
         }
     }
