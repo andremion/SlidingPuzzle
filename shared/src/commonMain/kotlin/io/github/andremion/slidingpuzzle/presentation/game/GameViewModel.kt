@@ -41,19 +41,35 @@ class GameViewModel : ViewModel() {
                         timer.start(::onTimerTick)
                         mutableState.update { uiState ->
                             uiState.copy(
+                                moves = game.moves.toString(),
                                 tiles = game.state.transform(),
-                                moves = game.moves.toString()
                             )
                         }
                     }
             }
 
-            GameUiEvent.NewGameClick -> {
+            GameUiEvent.PauseClick -> {
+                timer.pause()
+                mutableState.update { uiState ->
+                    uiState.copy(
+                        fab = GameUiState.Fab.Resume
+                    )
+                }
+            }
+
+            GameUiEvent.ResumeClick -> {
+                timer.resume(::onTimerTick)
+            }
+
+            GameUiEvent.ReplayClick -> {
+                timer.stop()
                 game = PuzzleGame(initialState = Puzzle3x3States.Shuffled)
                 mutableState.update { uiState ->
                     uiState.copy(
+                        moves = game.moves.toString(),
+                        timer = "00:00:00",
                         tiles = game.state.transform(),
-                        moves = game.moves.toString()
+                        fab = null
                     )
                 }
             }
@@ -72,19 +88,6 @@ class GameViewModel : ViewModel() {
                             }
                         }
                 }
-            }
-
-            GameUiEvent.PauseClick -> {
-                timer.pause()
-                mutableState.update { uiState ->
-                    uiState.copy(
-                        fab = GameUiState.Fab.Resume
-                    )
-                }
-            }
-
-            GameUiEvent.ResumeClick -> {
-                timer.resume(::onTimerTick)
             }
         }
     }

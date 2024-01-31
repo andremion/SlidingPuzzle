@@ -1,6 +1,5 @@
 package io.github.andremion.slidingpuzzle.ui.game
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import io.github.andremion.slidingpuzzle.presentation.game.GameUiEvent
 import io.github.andremion.slidingpuzzle.presentation.game.GameUiState
 import io.github.andremion.slidingpuzzle.presentation.game.GameViewModel
+import io.github.andremion.slidingpuzzle.ui.animation.FadeAnimatedVisibility
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
 
@@ -69,37 +70,40 @@ private fun ScreenContent(
                             contentDescription = "Solve"
                         )
                     }
+                    IconButton(
+                        onClick = { onUiEvent(GameUiEvent.ReplayClick) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Replay,
+                            contentDescription = "Replay"
+                        )
+                    }
                 },
                 floatingActionButton = {
-                    Crossfade(
-                        targetState = uiState.fab,
-                    ) { fab ->
-                        when (fab) {
-                            GameUiState.Fab.Resume ->
-                                FloatingActionButton(
-                                    elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
-                                    onClick = { onUiEvent(GameUiEvent.ResumeClick) }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.PlayArrow,
-                                        contentDescription = "Resume timer"
-                                    )
-                                }
-
-                            GameUiState.Fab.Pause ->
-                                FloatingActionButton(
-                                    elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
-                                    onClick = { onUiEvent(GameUiEvent.PauseClick) }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Pause,
-                                        contentDescription = "Pause timer"
-                                    )
-                                }
-
-                            null -> {
-                                // no-op
-                            }
+                    FadeAnimatedVisibility(
+                        isVisible = uiState.fab == GameUiState.Fab.Resume,
+                    ) {
+                        FloatingActionButton(
+                            elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
+                            onClick = { onUiEvent(GameUiEvent.ResumeClick) }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.PlayArrow,
+                                contentDescription = "Resume timer"
+                            )
+                        }
+                    }
+                    FadeAnimatedVisibility(
+                        isVisible = uiState.fab == GameUiState.Fab.Pause,
+                    ) {
+                        FloatingActionButton(
+                            elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
+                            onClick = { onUiEvent(GameUiEvent.PauseClick) }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Pause,
+                                contentDescription = "Pause timer"
+                            )
                         }
                     }
                 }
