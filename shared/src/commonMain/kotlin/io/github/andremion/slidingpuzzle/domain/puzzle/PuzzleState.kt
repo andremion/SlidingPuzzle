@@ -2,7 +2,9 @@ package io.github.andremion.slidingpuzzle.domain.puzzle
 
 import kotlin.math.sqrt
 
-data class PuzzleState(val tiles: List<Int>) {
+data class PuzzleState @Throws(IllegalArgumentException::class) constructor(
+    val tiles: List<Int>
+) {
 
     data class TilePosition(
         val row: Int,
@@ -27,8 +29,7 @@ data class PuzzleState(val tiles: List<Int>) {
             tiles.chunked(matrixSize)
                 .joinToString(separator = "\n") { row ->
                     row.joinToString(separator = "") { tile ->
-                        val padding = " ".repeat(maxTileLength - tile.toString().length)
-                        "[$padding$tile]"
+                        "[${tile.toString().padStart(maxTileLength)}]"
                     }
                 }
     }
@@ -88,6 +89,3 @@ fun PuzzleState.permuted(a: PuzzleState.TilePosition, b: PuzzleState.TilePositio
 
 fun PuzzleState.indexOf(position: PuzzleState.TilePosition): Int =
     position.row * matrixSize + position.column
-
-fun PuzzleState.shuffled(): PuzzleState =
-    PuzzleState(tiles.shuffled())

@@ -1,6 +1,7 @@
 package io.github.andremion.slidingpuzzle.domain.search
 
 import io.github.andremion.slidingpuzzle.domain.collections.Heap
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
@@ -32,6 +33,7 @@ class AstarSearch<Data>(
     private val exploredSet = mutableSetOf<Node<Data>>()
 //    private val exploredSet = HashMap<Data, Node<Data>>()
 
+    @Throws(CancellationException::class, IllegalStateException::class)
     suspend fun performSearch(
         start: Data,
         goal: Data,

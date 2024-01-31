@@ -1,17 +1,35 @@
 package io.github.andremion.slidingpuzzle.domain.puzzle
 
 import io.github.andremion.slidingpuzzle.domain.search.AstarSearch
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
 class PuzzleGame(
-    val state: PuzzleState
+    private val initialState: PuzzleState
 ) {
+    var state: PuzzleState = initialState
+        private set
 
+    var moves: Int = 0
+        private set
+
+    fun move(tile: Int) {
+        val blankPosition = state.getPosition(0)
+        val tilePosition = state.getPosition(tile)
+        val newState = state.permuted(blankPosition, tilePosition)
+        if (!state.getSuccessors().contains(newState)) {
+            error("Tile #$tile cannot be moved")
+        }
+        state = newState
+        moves++
+    }
+
+    @Throws(CancellationException::class, IllegalStateException::class)
     suspend fun solve(): List<PuzzleState> =
         withContext(Dispatchers.Default) {
-            val solvableStates = state.getSolvableStates()
+            val solvableStates = initialState.getSolvableStates()
             println("solvableStates: $solvableStates")
             if (solvableStates.isEmpty()) {
                 error("Puzzle is not solvable")
@@ -21,7 +39,7 @@ class PuzzleGame(
                 heuristics = { data -> data.heuristic(solvableStates.first()) },
                 successors = PuzzleState::getSuccessors
             ).performSearch(
-                start = state,
+                start = initialState,
                 goal = solvableStates.first(),
             )
 

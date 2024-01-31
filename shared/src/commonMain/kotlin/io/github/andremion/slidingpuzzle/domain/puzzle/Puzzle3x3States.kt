@@ -2,9 +2,11 @@ package io.github.andremion.slidingpuzzle.domain.puzzle
 
 object Puzzle3x3States {
 
-    val Shuffled = PuzzleState(
-        tiles = List(9) { it }
-    ).shuffled()
+    val Shuffled
+        get() = PuzzleState(
+            tiles = List(9) { it }
+                .shuffled()
+        )
 
     val Easy = PuzzleState(
         tiles = listOf(
