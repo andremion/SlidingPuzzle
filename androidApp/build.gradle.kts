@@ -14,10 +14,20 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0.0"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+    signingConfigs {
+        val default = "NOT_PROVIDED"
+        val releaseKeyStoreFile: String? by project
+        val releaseKeyStoreAlias: String? by project
+        val releaseKeyStorePassword: String? by project
+        create("release") {
+            storeFile = file(releaseKeyStoreFile ?: System.getenv("releaseKeyStoreFile") ?: default)
+            storePassword = releaseKeyStorePassword ?: System.getenv("releaseKeyStorePassword") ?: default
+            keyAlias = releaseKeyStoreAlias ?: System.getenv("releaseKeyStoreAlias") ?: default
+            keyPassword = releaseKeyStorePassword ?: System.getenv("releaseKeyStorePassword") ?: default
         }
     }
     buildTypes {
@@ -25,8 +35,14 @@ android {
             applicationIdSuffix = ".debug"
         }
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
     compileOptions {
