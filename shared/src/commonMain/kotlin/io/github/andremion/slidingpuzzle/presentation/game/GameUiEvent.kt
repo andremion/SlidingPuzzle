@@ -8,5 +8,4 @@ sealed interface GameUiEvent {
     data object HintClick : GameUiEvent
     data object GoalClick : GameUiEvent
     data object DismissDialogClick : GameUiEvent
-    data object SolveClick : GameUiEvent
 }

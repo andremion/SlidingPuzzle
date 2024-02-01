@@ -28,6 +28,11 @@ class PuzzleGame(
         moves++
     }
 
+    fun replace(newState: PuzzleState) {
+        state = newState
+        moves++
+    }
+
     suspend fun solve(): List<PuzzleState> =
         withContext(Dispatchers.Default) {
             println("goal: $goal")

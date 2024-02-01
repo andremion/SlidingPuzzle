@@ -4,7 +4,6 @@ import io.github.andremion.slidingpuzzle.domain.puzzle.Puzzle3x3States
 import io.github.andremion.slidingpuzzle.domain.puzzle.PuzzleGame
 import io.github.andremion.slidingpuzzle.domain.time.Timer
 import io.github.andremion.slidingpuzzle.domain.time.formatTime
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -71,12 +70,16 @@ class GameViewModel : ViewModel() {
             }
 
             GameUiEvent.HintClick -> {
-                mutableState.update { uiState ->
-                    uiState.copy(
-                        dialog = GameUiState.Dialog.Goal(
-                            board = puzzleGame.goal.transform()
+                viewModelScope.launch {
+                    val states = puzzleGame.solve()
+                    puzzleGame.replace(newState = states[1])
+                    mutableState.update { uiState ->
+                        uiState.copy(
+                            moves = puzzleGame.moves.toString(),
+                            board = puzzleGame.state.transform(),
                         )
-                    )
+                    }
+                    timer.start(::onTimerTick)
                 }
             }
 
@@ -95,19 +98,6 @@ class GameViewModel : ViewModel() {
                     uiState.copy(
                         dialog = GameUiState.Dialog.None
                     )
-                }
-            }
-
-            GameUiEvent.SolveClick -> {
-                viewModelScope.launch {
-                    puzzleGame.solve().forEach { state ->
-                        mutableState.update { uiState ->
-                            uiState.copy(
-                                board = state.transform(),
-                            )
-                        }
-                        delay(500)
-                    }
                 }
             }
         }

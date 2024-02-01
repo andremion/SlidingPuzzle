@@ -120,8 +120,6 @@ private fun ScreenContent(
                 },
             )
         }
-
-        GameUiState.Dialog.Solve -> TODO()
     }
 }
 

@@ -10,7 +10,6 @@ data class GameUiState(
     val board: Board = Board(),
     val fab: Fab = Fab.None,
     val dialog: Dialog = Dialog.None,
-    val hintCount: Int = 0,
 ) {
     data class Board(
         val tiles: List<Tile> = List(9, ::Tile),
@@ -31,6 +30,5 @@ data class GameUiState(
     sealed interface Dialog {
         data object None : Dialog
         data class Goal(val board: Board) : Dialog
-        data object Solve : Dialog
     }
 }
