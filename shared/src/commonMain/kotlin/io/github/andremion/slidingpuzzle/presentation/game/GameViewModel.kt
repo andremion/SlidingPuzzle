@@ -2,7 +2,6 @@ package io.github.andremion.slidingpuzzle.presentation.game
 
 import io.github.andremion.slidingpuzzle.domain.puzzle.Puzzle3x3States
 import io.github.andremion.slidingpuzzle.domain.puzzle.PuzzleGame
-import io.github.andremion.slidingpuzzle.domain.puzzle.getSolvableState
 import io.github.andremion.slidingpuzzle.domain.time.Timer
 import io.github.andremion.slidingpuzzle.domain.time.formatTime
 import kotlinx.coroutines.delay
@@ -12,41 +11,37 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DateTimePeriod
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import kotlin.time.Duration
 
 class GameViewModel : ViewModel() {
 
-    private var game = PuzzleGame(initialState = Puzzle3x3States.Shuffled)
+    private var puzzleGame = getSolvableGame()
     private val timer = Timer(coroutineScope = viewModelScope)
 
-    private val initialState: GameUiState
-        get() = GameUiState(
-            moves = game.moves.toString(),
-            board = game.state.transform(),
-        )
-    private val mutableState = MutableStateFlow(initialState)
+    private val mutableState = MutableStateFlow(GameUiState())
     val state: StateFlow<GameUiState> = mutableState
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-            initialValue = initialState
+            initialValue = GameUiState()
         )
 
     fun onUiEvent(event: GameUiEvent) {
         when (event) {
             is GameUiEvent.TileClick -> {
-                runCatching { game.move(tile = event.tile.number) }
+                runCatching { puzzleGame.move(tile = event.tile) }
                     .onSuccess {
                         timer.start(::onTimerTick)
                         mutableState.update { uiState ->
                             uiState.copy(
-                                moves = game.moves.toString(),
-                                board = game.state.transform(),
+                                moves = puzzleGame.moves.toString(),
+                                board = puzzleGame.state.transform(),
                             )
                         }
+                    }.onFailure {
+                        // Tile cannot be moved
                     }
             }
 
@@ -66,23 +61,23 @@ class GameViewModel : ViewModel() {
 
             GameUiEvent.ReplayClick -> {
                 timer.stop()
-                game = PuzzleGame(initialState = Puzzle3x3States.Shuffled)
-                mutableState.update { initialState }
+                puzzleGame = getSolvableGame()
+                mutableState.update {
+                    GameUiState(
+                        moves = puzzleGame.moves.toString(),
+                        board = puzzleGame.state.transform(),
+                    )
+                }
             }
 
             GameUiEvent.HintClick -> {
-                runCatching { requireNotNull(game.state.getSolvableState()) }
-                    .onSuccess { solvableState ->
-                        mutableState.update { uiState ->
-                            uiState.copy(
-                                hint = GameUiState.Hint.Goal(
-                                    board = solvableState.transform()
-                                )
-                            )
-                        }
-                    }.onFailure {
-                        // TODO Puzzle is not solvable
-                    }
+                mutableState.update { uiState ->
+                    uiState.copy(
+                        hint = GameUiState.Hint.Goal(
+                            board = puzzleGame.goal.transform()
+                        )
+                    )
+                }
             }
 
             GameUiEvent.DismissHintClick -> {
@@ -95,17 +90,14 @@ class GameViewModel : ViewModel() {
 
             GameUiEvent.SolveClick -> {
                 viewModelScope.launch {
-                    runCatching { game.solve() }
-                        .onSuccess { states ->
-                            states.forEach { state ->
-                                mutableState.update { uiState ->
-                                    uiState.copy(
-                                        board = state.transform(),
-                                    )
-                                }
-                                delay(1_000)
-                            }
+                    puzzleGame.solve().forEach { state ->
+                        mutableState.update { uiState ->
+                            uiState.copy(
+                                board = state.transform(),
+                            )
                         }
+                        delay(500)
+                    }
                 }
             }
         }
@@ -113,7 +105,6 @@ class GameViewModel : ViewModel() {
 
     private fun onTimerTick(duration: Duration) {
         mutableState.update { uiState ->
-            DateTimePeriod().toString()
             uiState.copy(
                 timer = duration.formatTime(),
                 fab = GameUiState.Fab.Pause,
@@ -121,4 +112,16 @@ class GameViewModel : ViewModel() {
             )
         }
     }
+}
+
+private fun getSolvableGame(): PuzzleGame {
+    var solvableGame: PuzzleGame? = null
+    while (solvableGame == null) {
+        try {
+            solvableGame = PuzzleGame(initialState = Puzzle3x3States.Shuffled)
+        } catch (_: Exception) {
+            // Ignore
+        }
+    }
+    return solvableGame
 }

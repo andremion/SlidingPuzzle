@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import io.github.andremion.slidingpuzzle.presentation.game.GameUiState
 
 private val BoardInnerPadding = 8.dp
 private val TileRoundedCornerSize = 8.dp
@@ -24,11 +23,11 @@ private val TileRoundedCornerSize = 8.dp
 @Composable
 fun PuzzleBoard(
     modifier: Modifier,
-    tiles: List<GameUiState.Board.Tile>,
+    tiles: List<Int>,
     columns: Int,
     tileTextStyle: TextStyle,
     isEnabled: Boolean = true,
-    onClick: ((tile: GameUiState.Board.Tile) -> Unit)? = null
+    onClick: ((tile: Int) -> Unit)? = null
 ) {
     LazyVerticalGrid(
         modifier = modifier,
@@ -42,11 +41,11 @@ fun PuzzleBoard(
             .forEach { row ->
                 items(
                     items = row,
-                    key = GameUiState.Board.Tile::number
+                    key = { it }
                 ) { tile ->
                     BoardTile(
                         modifier = Modifier.animateItemPlacement(),
-                        tile = tile,
+                        number = tile,
                         textStyle = tileTextStyle,
                         isEnabled = isEnabled,
                         onClick = { onClick?.invoke(tile) }
@@ -59,7 +58,7 @@ fun PuzzleBoard(
 @Composable
 private fun BoardTile(
     modifier: Modifier,
-    tile: GameUiState.Board.Tile,
+    number: Int,
     textStyle: TextStyle,
     isEnabled: Boolean,
     onClick: () -> Unit
@@ -67,7 +66,7 @@ private fun BoardTile(
     Box(
         modifier = modifier
     ) {
-        if (tile.number > 0) {
+        if (number > 0) {
             Button(
                 modifier = Modifier
                     .aspectRatio(1f),
@@ -77,7 +76,7 @@ private fun BoardTile(
                 enabled = isEnabled
             ) {
                 Text(
-                    text = tile.number.toString(),
+                    text = number.toString(),
                     style = textStyle
                 )
             }

@@ -24,6 +24,7 @@ import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +46,10 @@ fun GameScreen() {
         uiState = uiState,
         onUiEvent = viewModel::onUiEvent
     )
+
+    LaunchedEffect(true) {
+        viewModel.onUiEvent(GameUiEvent.ReplayClick)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,83 +61,10 @@ private fun ScreenContent(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Sliding Puzzle Game"
-                    )
-                },
+                title = { Text(text = "Sliding Puzzle Game") },
             )
         },
-        bottomBar = {
-            BottomAppBar(
-                actions = {
-                    PlainTooltipBox(
-                        tooltip = { Text(text = "Hint") }
-                    ) {
-                        IconButton(
-                            modifier = Modifier.tooltipAnchor(),
-                            onClick = { onUiEvent(GameUiEvent.HintClick) }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Lightbulb,
-                                contentDescription = "Hint"
-                            )
-                        }
-                    }
-                    PlainTooltipBox(
-                        tooltip = { Text(text = "Replay") }
-                    ) {
-                        IconButton(
-                            modifier = Modifier.tooltipAnchor(),
-                            onClick = { onUiEvent(GameUiEvent.ReplayClick) }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Replay,
-                                contentDescription = "Replay"
-                            )
-                        }
-                    }
-                },
-                floatingActionButton = {
-                    PlainTooltipBox(
-                        tooltip = { Text(text = "Resume timer") }
-                    ) {
-                        FadeAnimatedVisibility(
-                            isVisible = uiState.fab == GameUiState.Fab.Resume,
-                        ) {
-                            FloatingActionButton(
-                                modifier = Modifier.tooltipAnchor(),
-                                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
-                                onClick = { onUiEvent(GameUiEvent.ResumeClick) }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.PlayArrow,
-                                    contentDescription = "Resume timer"
-                                )
-                            }
-                        }
-                    }
-                    PlainTooltipBox(
-                        tooltip = { Text(text = "Pause timer") }
-                    ) {
-                        FadeAnimatedVisibility(
-                            isVisible = uiState.fab == GameUiState.Fab.Pause,
-                        ) {
-                            FloatingActionButton(
-                                modifier = Modifier.tooltipAnchor(),
-                                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
-                                onClick = { onUiEvent(GameUiEvent.PauseClick) }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Pause,
-                                    contentDescription = "Pause timer"
-                                )
-                            }
-                        }
-                    }
-                }
-            )
-        }
+        bottomBar = { BottomBar(uiState.fab, onUiEvent) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -152,7 +84,7 @@ private fun ScreenContent(
             PuzzleBoard(
                 modifier = Modifier
                     .size(300.dp),
-                tiles = uiState.board.tiles,
+                tiles = uiState.board.tiles.map(GameUiState.Board.Tile::number),
                 columns = uiState.board.columns,
                 tileTextStyle = MaterialTheme.typography.headlineLarge,
                 onClick = { tile -> onUiEvent(GameUiEvent.TileClick(tile)) }
@@ -171,7 +103,7 @@ private fun ScreenContent(
                     PuzzleBoard(
                         modifier = Modifier
                             .size(150.dp),
-                        tiles = hint.board.tiles,
+                        tiles = hint.board.tiles.map(GameUiState.Board.Tile::number),
                         columns = hint.board.columns,
                         tileTextStyle = MaterialTheme.typography.headlineSmall,
                         isEnabled = false,
@@ -190,4 +122,80 @@ private fun ScreenContent(
 
         GameUiState.Hint.Solve -> TODO()
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BottomBar(
+    fab: GameUiState.Fab,
+    onUiEvent: (GameUiEvent) -> Unit
+) {
+    BottomAppBar(
+        actions = {
+            PlainTooltipBox(
+                tooltip = { Text(text = "Hint") }
+            ) {
+                IconButton(
+                    modifier = Modifier.tooltipAnchor(),
+                    onClick = { onUiEvent(GameUiEvent.HintClick) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Lightbulb,
+                        contentDescription = "Hint"
+                    )
+                }
+            }
+            PlainTooltipBox(
+                tooltip = { Text(text = "Replay") }
+            ) {
+                IconButton(
+                    modifier = Modifier.tooltipAnchor(),
+                    onClick = { onUiEvent(GameUiEvent.ReplayClick) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Replay,
+                        contentDescription = "Replay"
+                    )
+                }
+            }
+        },
+        floatingActionButton = {
+            PlainTooltipBox(
+                tooltip = { Text(text = "Resume timer") }
+            ) {
+                FadeAnimatedVisibility(
+                    isVisible = fab == GameUiState.Fab.Resume,
+                ) {
+                    FloatingActionButton(
+                        modifier = Modifier.tooltipAnchor(),
+                        elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
+                        onClick = { onUiEvent(GameUiEvent.ResumeClick) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.PlayArrow,
+                            contentDescription = "Resume timer"
+                        )
+                    }
+                }
+            }
+            PlainTooltipBox(
+                tooltip = { Text(text = "Pause timer") }
+            ) {
+                FadeAnimatedVisibility(
+                    isVisible = fab == GameUiState.Fab.Pause,
+                ) {
+                    FloatingActionButton(
+                        modifier = Modifier.tooltipAnchor(),
+                        elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
+                        onClick = { onUiEvent(GameUiEvent.PauseClick) }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Pause,
+                            contentDescription = "Pause timer"
+                        )
+                    }
+                }
+            }
+        }
+    )
 }

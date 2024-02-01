@@ -7,13 +7,14 @@ data class GameUiState(
     val moves: String = "0",
     val timer: String = "00:00:00",
     val isPaused: Boolean = false,
-    val board: Board,
+    val board: Board = Board(),
     val fab: Fab = Fab.None,
     val hint: Hint = Hint.None,
+    val hintCount: Int = 0,
 ) {
     data class Board(
-        val tiles: List<Tile>,
-        val columns: Int,
+        val tiles: List<Tile> = List(9, ::Tile),
+        val columns: Int = 3,
         val isEnabled: Boolean = true,
     ) {
         data class Tile(
