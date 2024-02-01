@@ -2,14 +2,16 @@ package io.github.andremion.slidingpuzzle.presentation.game
 
 import io.github.andremion.slidingpuzzle.domain.puzzle.Puzzle3x3States
 import io.github.andremion.slidingpuzzle.domain.puzzle.PuzzleGame
-import io.github.andremion.slidingpuzzle.domain.puzzle.PuzzleState
-import io.github.andremion.slidingpuzzle.domain.puzzle.getSolvableStates
+import io.github.andremion.slidingpuzzle.domain.puzzle.getSolvableState
 import io.github.andremion.slidingpuzzle.domain.time.Timer
 import io.github.andremion.slidingpuzzle.domain.time.formatTime
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,8 +28,7 @@ class GameViewModel : ViewModel() {
     private val initialState: GameUiState
         get() = GameUiState(
             moves = game.moves.toString(),
-            tiles = game.state.transform(),
-            columns = game.state.matrixSize,
+            board = game.state.transform(),
         )
     private val mutableState = MutableStateFlow(initialState)
     val state: StateFlow<GameUiState> = mutableState
@@ -36,6 +37,11 @@ class GameViewModel : ViewModel() {
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
             initialValue = initialState
         )
+
+    private val mutableEffect = MutableSharedFlow<GameUiEffect>(
+        extraBufferCapacity = 1,
+    )
+    val effect: SharedFlow<GameUiEffect> = mutableEffect.asSharedFlow()
 
     fun onUiEvent(event: GameUiEvent) {
         when (event) {
@@ -46,7 +52,7 @@ class GameViewModel : ViewModel() {
                         mutableState.update { uiState ->
                             uiState.copy(
                                 moves = game.moves.toString(),
-                                tiles = game.state.transform(),
+                                board = game.state.transform(),
                             )
                         }
                     }
@@ -57,7 +63,7 @@ class GameViewModel : ViewModel() {
                 mutableState.update { uiState ->
                     uiState.copy(
                         fab = GameUiState.Fab.Resume,
-                        blinkTimer = true
+                        isPaused = true
                     )
                 }
             }
@@ -72,6 +78,19 @@ class GameViewModel : ViewModel() {
                 mutableState.update { initialState }
             }
 
+            GameUiEvent.HintClick -> {
+                runCatching { requireNotNull(game.state.getSolvableState()) }
+                    .onSuccess { solvableState ->
+                        mutableEffect.tryEmit(
+                            GameUiEffect.ShowHint(
+                                board = solvableState.transform()
+                            )
+                        )
+                    }.onFailure {
+                        // TODO Puzzle is not solvable
+                    }
+            }
+
             GameUiEvent.SolveClick -> {
                 viewModelScope.launch {
                     runCatching { game.solve() }
@@ -79,7 +98,7 @@ class GameViewModel : ViewModel() {
                             states.forEach { state ->
                                 mutableState.update { uiState ->
                                     uiState.copy(
-                                        tiles = state.transform(),
+                                        board = state.transform(),
                                     )
                                 }
                                 delay(1_000)
@@ -96,7 +115,7 @@ class GameViewModel : ViewModel() {
             uiState.copy(
                 timer = duration.formatTime(),
                 fab = GameUiState.Fab.Pause,
-                blinkTimer = false
+                isPaused = false
             )
         }
     }

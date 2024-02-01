@@ -29,7 +29,7 @@ import io.github.andremion.slidingpuzzle.ui.component.VerticalDivider
 fun PuzzleDashboard(
     moves: String,
     timer: String,
-    blinkTimer: Boolean
+    isPaused: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -49,7 +49,7 @@ fun PuzzleDashboard(
                 .padding(vertical = 8.dp)
                 .weight(1f),
             timer = timer,
-            blinking = blinkTimer
+            isPaused = isPaused
         )
     }
 }
@@ -78,12 +78,12 @@ private fun Moves(
 private fun Timer(
     modifier: Modifier,
     timer: String,
-    blinking: Boolean
+    isPaused: Boolean
 ) {
-    val infiniteTransition = rememberInfiniteTransition(label = "TimerBlinking")
+    val infiniteTransition = rememberInfiniteTransition(label = "TimerPaused")
     val animatedAlpha by infiniteTransition.animateFloat(
         initialValue = 1f,
-        targetValue = if (blinking) 0.2f else 1f,
+        targetValue = if (isPaused) 0.2f else 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 800, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse

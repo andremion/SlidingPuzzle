@@ -6,14 +6,19 @@ import androidx.compose.runtime.Immutable
 data class GameUiState(
     val moves: String = "0",
     val timer: String = "00:00:00",
-    val blinkTimer: Boolean = false,
-    val tiles: List<Tile>,
-    val columns: Int,
+    val isPaused: Boolean = false,
+    val board: Board,
     val fab: Fab? = null,
 ) {
-    data class Tile(
-        val number: Int,
-    )
+    data class Board(
+        val tiles: List<Tile>,
+        val columns: Int,
+        val isEnabled: Boolean = true,
+    ) {
+        data class Tile(
+            val number: Int,
+        )
+    }
 
     sealed interface Fab {
         data object Resume : Fab

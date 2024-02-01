@@ -29,18 +29,15 @@ class PuzzleGame(
     @Throws(CancellationException::class, IllegalStateException::class)
     suspend fun solve(): List<PuzzleState> =
         withContext(Dispatchers.Default) {
-            val solvableStates = state.getSolvableStates()
-            println("solvableStates: $solvableStates")
-            if (solvableStates.isEmpty()) {
-                error("Puzzle is not solvable")
-            }
+            val solvableState = state.getSolvableState() ?: error("Puzzle is not solvable")
+            println("solvableState: $solvableState")
 
             val states = AstarSearch(
-                heuristics = { data -> data.heuristic(solvableStates.first()) },
+                heuristics = { data -> data.heuristic(solvableState) },
                 successors = PuzzleState::getSuccessors
             ).performSearch(
                 start = state,
-                goal = solvableStates.first(),
+                goal = solvableState,
             )
 
             states
@@ -109,11 +106,11 @@ private val SpiralGoalStates = mapOf(
     ),
 )
 
-fun PuzzleState.getSolvableStates(): List<PuzzleState> {
+fun PuzzleState.getSolvableState(): PuzzleState? {
     val sequentialGoal = SequentialGoalStates.getValue(matrixSize)
     val spiralGoal = SpiralGoalStates.getValue(matrixSize)
     return listOf(sequentialGoal, spiralGoal)
-        .filter(::isSolvable)
+        .firstOrNull(::isSolvable)
 }
 
 /**

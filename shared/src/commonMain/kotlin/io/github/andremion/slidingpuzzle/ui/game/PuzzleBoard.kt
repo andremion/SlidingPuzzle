@@ -10,10 +10,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import io.github.andremion.slidingpuzzle.presentation.game.GameUiState
 
@@ -24,9 +24,11 @@ private val TileRoundedCornerSize = 8.dp
 @Composable
 fun PuzzleBoard(
     modifier: Modifier,
-    tiles: List<GameUiState.Tile>,
+    tiles: List<GameUiState.Board.Tile>,
     columns: Int,
-    onClick: (tile: GameUiState.Tile) -> Unit
+    tileTextStyle: TextStyle,
+    isEnabled: Boolean = true,
+    onClick: ((tile: GameUiState.Board.Tile) -> Unit)? = null
 ) {
     LazyVerticalGrid(
         modifier = modifier,
@@ -40,12 +42,14 @@ fun PuzzleBoard(
             .forEach { row ->
                 items(
                     items = row,
-                    key = GameUiState.Tile::number
+                    key = GameUiState.Board.Tile::number
                 ) { tile ->
                     BoardTile(
                         modifier = Modifier.animateItemPlacement(),
                         tile = tile,
-                        onClick = { onClick(tile) }
+                        textStyle = tileTextStyle,
+                        isEnabled = isEnabled,
+                        onClick = { onClick?.invoke(tile) }
                     )
                 }
             }
@@ -55,7 +59,9 @@ fun PuzzleBoard(
 @Composable
 private fun BoardTile(
     modifier: Modifier,
-    tile: GameUiState.Tile,
+    tile: GameUiState.Board.Tile,
+    textStyle: TextStyle,
+    isEnabled: Boolean,
     onClick: () -> Unit
 ) {
     Box(
@@ -66,11 +72,13 @@ private fun BoardTile(
                 modifier = Modifier
                     .aspectRatio(1f),
                 shape = RoundedCornerShape(TileRoundedCornerSize),
+                contentPadding = PaddingValues(0.dp),
                 onClick = onClick,
+                enabled = isEnabled
             ) {
                 Text(
                     text = tile.number.toString(),
-                    style = MaterialTheme.typography.headlineLarge
+                    style = textStyle
                 )
             }
         }
