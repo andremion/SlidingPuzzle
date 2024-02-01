@@ -8,7 +8,8 @@ data class GameUiState(
     val timer: String = "00:00:00",
     val isPaused: Boolean = false,
     val board: Board,
-    val fab: Fab? = null,
+    val fab: Fab = Fab.None,
+    val hint: Hint = Hint.None,
 ) {
     data class Board(
         val tiles: List<Tile>,
@@ -21,7 +22,14 @@ data class GameUiState(
     }
 
     sealed interface Fab {
+        data object None : Fab
         data object Resume : Fab
         data object Pause : Fab
+    }
+
+    sealed interface Hint {
+        data object None : Hint
+        data class Goal(val board: Board) : Hint
+        data object Solve : Hint
     }
 }

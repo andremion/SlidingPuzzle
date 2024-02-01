@@ -24,21 +24,14 @@ import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.github.andremion.slidingpuzzle.presentation.game.GameUiEffect
 import io.github.andremion.slidingpuzzle.presentation.game.GameUiEvent
 import io.github.andremion.slidingpuzzle.presentation.game.GameUiState
 import io.github.andremion.slidingpuzzle.presentation.game.GameViewModel
 import io.github.andremion.slidingpuzzle.ui.animation.FadeAnimatedVisibility
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
 
@@ -52,45 +45,6 @@ fun GameScreen() {
         uiState = uiState,
         onUiEvent = viewModel::onUiEvent
     )
-
-    var hint by remember { mutableStateOf<GameUiState.Board?>(null) }
-    LaunchedEffect(viewModel) {
-        viewModel.effect
-            .onEach { effect ->
-                when (effect) {
-                    is GameUiEffect.ShowHint -> {
-                        hint = effect.board
-                    }
-                }
-            }.launchIn(this)
-    }
-
-    val hintBoard = hint
-    if (hintBoard != null) {
-        AlertDialog(
-            title = {
-                Text(text = "This is your goal")
-            },
-            text = {
-                PuzzleBoard(
-                    modifier = Modifier
-                        .size(150.dp),
-                    tiles = hintBoard.tiles,
-                    columns = hintBoard.columns,
-                    tileTextStyle = MaterialTheme.typography.headlineSmall,
-                    isEnabled = false,
-                )
-            },
-            onDismissRequest = { hint = null },
-            confirmButton = {
-                Button(
-                    onClick = { hint = null }
-                ) {
-                    Text(text = "Dismiss")
-                }
-            },
-        )
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -204,5 +158,36 @@ private fun ScreenContent(
                 onClick = { tile -> onUiEvent(GameUiEvent.TileClick(tile)) }
             )
         }
+    }
+    when (val hint = uiState.hint) {
+        GameUiState.Hint.None -> Unit
+
+        is GameUiState.Hint.Goal -> {
+            AlertDialog(
+                title = {
+                    Text(text = "This is your goal")
+                },
+                text = {
+                    PuzzleBoard(
+                        modifier = Modifier
+                            .size(150.dp),
+                        tiles = hint.board.tiles,
+                        columns = hint.board.columns,
+                        tileTextStyle = MaterialTheme.typography.headlineSmall,
+                        isEnabled = false,
+                    )
+                },
+                onDismissRequest = { onUiEvent(GameUiEvent.DismissHintClick) },
+                confirmButton = {
+                    Button(
+                        onClick = { onUiEvent(GameUiEvent.DismissHintClick) }
+                    ) {
+                        Text(text = "Dismiss")
+                    }
+                },
+            )
+        }
+
+        GameUiState.Hint.Solve -> TODO()
     }
 }

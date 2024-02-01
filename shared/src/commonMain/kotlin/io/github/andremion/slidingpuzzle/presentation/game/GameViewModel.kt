@@ -6,12 +6,9 @@ import io.github.andremion.slidingpuzzle.domain.puzzle.getSolvableState
 import io.github.andremion.slidingpuzzle.domain.time.Timer
 import io.github.andremion.slidingpuzzle.domain.time.formatTime
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -37,11 +34,6 @@ class GameViewModel : ViewModel() {
             started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
             initialValue = initialState
         )
-
-    private val mutableEffect = MutableSharedFlow<GameUiEffect>(
-        extraBufferCapacity = 1,
-    )
-    val effect: SharedFlow<GameUiEffect> = mutableEffect.asSharedFlow()
 
     fun onUiEvent(event: GameUiEvent) {
         when (event) {
@@ -81,14 +73,24 @@ class GameViewModel : ViewModel() {
             GameUiEvent.HintClick -> {
                 runCatching { requireNotNull(game.state.getSolvableState()) }
                     .onSuccess { solvableState ->
-                        mutableEffect.tryEmit(
-                            GameUiEffect.ShowHint(
-                                board = solvableState.transform()
+                        mutableState.update { uiState ->
+                            uiState.copy(
+                                hint = GameUiState.Hint.Goal(
+                                    board = solvableState.transform()
+                                )
                             )
-                        )
+                        }
                     }.onFailure {
                         // TODO Puzzle is not solvable
                     }
+            }
+
+            GameUiEvent.DismissHintClick -> {
+                mutableState.update { uiState ->
+                    uiState.copy(
+                        hint = GameUiState.Hint.None
+                    )
+                }
             }
 
             GameUiEvent.SolveClick -> {
