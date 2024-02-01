@@ -59,7 +59,9 @@ class GameViewModel : ViewModel() {
             GameUiEvent.HintClick -> {
                 viewModelScope.launch {
                     val states = puzzleGame.solve()
-                    puzzleGame.replace(newState = states[1]) // The first item is the current state
+                    if (states.size > 1) {
+                        puzzleGame.replace(newState = states[1]) // The first item is the current state
+                    }
                     onTileMove()
                 }
             }
