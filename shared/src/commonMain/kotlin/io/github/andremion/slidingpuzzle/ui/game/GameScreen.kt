@@ -27,7 +27,6 @@ import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,10 +48,6 @@ fun GameScreen() {
         uiState = uiState,
         onUiEvent = viewModel::onUiEvent
     )
-
-    LaunchedEffect(true) {
-        viewModel.onUiEvent(GameUiEvent.ReplayClick)
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

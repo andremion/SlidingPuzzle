@@ -27,6 +27,15 @@ class GameViewModel : ViewModel() {
             initialValue = GameUiState()
         )
 
+    init {
+        mutableState.update {
+            GameUiState(
+                moves = puzzleGame.moves.toString(),
+                board = puzzleGame.state.transform(),
+            )
+        }
+    }
+
     fun onUiEvent(event: GameUiEvent) {
         when (event) {
             is GameUiEvent.TileClick -> {
@@ -44,7 +53,7 @@ class GameViewModel : ViewModel() {
             }
 
             GameUiEvent.ReplayClick -> {
-                replay()
+                newGame()
             }
 
             GameUiEvent.HintClick -> {
@@ -67,7 +76,7 @@ class GameViewModel : ViewModel() {
 
             is GameUiEvent.DismissDialogClick -> {
                 if (event.dialog is GameUiState.Dialog.Congratulations) {
-                    replay()
+                    newGame()
                 }
                 mutableState.update { uiState ->
                     uiState.copy(
@@ -121,7 +130,7 @@ class GameViewModel : ViewModel() {
         }
     }
 
-    private fun replay() {
+    private fun newGame() {
         timer.stop()
         puzzleGame = getSolvableGame()
         mutableState.update {
