@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.rounded.Lightbulb
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -91,10 +92,10 @@ private fun ScreenContent(
             )
         }
     }
-    when (val hint = uiState.hint) {
-        GameUiState.Hint.None -> Unit
+    when (val hint = uiState.dialog) {
+        GameUiState.Dialog.None -> Unit
 
-        is GameUiState.Hint.Goal -> {
+        is GameUiState.Dialog.Goal -> {
             AlertDialog(
                 title = {
                     Text(text = "This is your goal")
@@ -109,10 +110,10 @@ private fun ScreenContent(
                         isEnabled = false,
                     )
                 },
-                onDismissRequest = { onUiEvent(GameUiEvent.DismissHintClick) },
+                onDismissRequest = { onUiEvent(GameUiEvent.DismissDialogClick) },
                 confirmButton = {
                     Button(
-                        onClick = { onUiEvent(GameUiEvent.DismissHintClick) }
+                        onClick = { onUiEvent(GameUiEvent.DismissDialogClick) }
                     ) {
                         Text(text = "Dismiss")
                     }
@@ -120,7 +121,7 @@ private fun ScreenContent(
             )
         }
 
-        GameUiState.Hint.Solve -> TODO()
+        GameUiState.Dialog.Solve -> TODO()
     }
 }
 
@@ -142,6 +143,19 @@ private fun BottomBar(
                     Icon(
                         imageVector = Icons.Rounded.Lightbulb,
                         contentDescription = "Hint"
+                    )
+                }
+            }
+            PlainTooltipBox(
+                tooltip = { Text(text = "Goal") }
+            ) {
+                IconButton(
+                    modifier = Modifier.tooltipAnchor(),
+                    onClick = { onUiEvent(GameUiEvent.GoalClick) }
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Flag,
+                        contentDescription = "Goal"
                     )
                 }
             }

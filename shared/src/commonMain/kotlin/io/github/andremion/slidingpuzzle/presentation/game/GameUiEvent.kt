@@ -6,6 +6,7 @@ sealed interface GameUiEvent {
     data object ResumeClick : GameUiEvent
     data object ReplayClick : GameUiEvent
     data object HintClick : GameUiEvent
-    data object DismissHintClick : GameUiEvent
+    data object GoalClick : GameUiEvent
+    data object DismissDialogClick : GameUiEvent
     data object SolveClick : GameUiEvent
 }

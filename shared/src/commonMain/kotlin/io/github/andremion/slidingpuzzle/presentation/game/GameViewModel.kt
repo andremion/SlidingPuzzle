@@ -73,17 +73,27 @@ class GameViewModel : ViewModel() {
             GameUiEvent.HintClick -> {
                 mutableState.update { uiState ->
                     uiState.copy(
-                        hint = GameUiState.Hint.Goal(
+                        dialog = GameUiState.Dialog.Goal(
                             board = puzzleGame.goal.transform()
                         )
                     )
                 }
             }
 
-            GameUiEvent.DismissHintClick -> {
+            GameUiEvent.GoalClick -> {
                 mutableState.update { uiState ->
                     uiState.copy(
-                        hint = GameUiState.Hint.None
+                        dialog = GameUiState.Dialog.Goal(
+                            board = puzzleGame.goal.transform()
+                        )
+                    )
+                }
+            }
+
+            GameUiEvent.DismissDialogClick -> {
+                mutableState.update { uiState ->
+                    uiState.copy(
+                        dialog = GameUiState.Dialog.None
                     )
                 }
             }

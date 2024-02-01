@@ -9,7 +9,7 @@ data class GameUiState(
     val isPaused: Boolean = false,
     val board: Board = Board(),
     val fab: Fab = Fab.None,
-    val hint: Hint = Hint.None,
+    val dialog: Dialog = Dialog.None,
     val hintCount: Int = 0,
 ) {
     data class Board(
@@ -28,9 +28,9 @@ data class GameUiState(
         data object Pause : Fab
     }
 
-    sealed interface Hint {
-        data object None : Hint
-        data class Goal(val board: Board) : Hint
-        data object Solve : Hint
+    sealed interface Dialog {
+        data object None : Dialog
+        data class Goal(val board: Board) : Dialog
+        data object Solve : Dialog
     }
 }
