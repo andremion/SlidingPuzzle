@@ -13,7 +13,7 @@ A small Kotlin multiplatform game based on the [Sliding-Puzzle](https://en.wikip
 
 ## MIT License
 
-    Copyright (c) [2024] André Luiz Oliveira Rêgo
+    Copyright (c) 2024 André Luiz Oliveira Rêgo
     
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal

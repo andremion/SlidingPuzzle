@@ -17,8 +17,8 @@ kotlin {
         iosX64(),
         iosArm64(),
         iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
+    ).forEach { target ->
+        target.binaries.framework {
             baseName = "shared"
             isStatic = true
         }
@@ -44,6 +44,11 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
+        }
+        iosMain.dependencies {
+            // FIXME This is just to fix a Kotlin/Native compilation issue until Koin has updated their dependencies.
+            //  https://github.com/cashapp/sqldelight/issues/4357#issuecomment-1839905700
+            implementation("co.touchlab:stately-common:2.0.5")
         }
     }
 }

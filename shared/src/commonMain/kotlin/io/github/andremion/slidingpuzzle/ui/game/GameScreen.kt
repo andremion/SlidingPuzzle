@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Flag
-import androidx.compose.material.icons.rounded.Lightbulb
+import androidx.compose.material.icons.outlined.Lightbulb
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Replay
@@ -131,7 +131,7 @@ private fun BottomBar(
                     onClick = { onUiEvent(GameUiEvent.HintClick) }
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Lightbulb,
+                        imageVector = Icons.Outlined.Lightbulb,
                         contentDescription = "Hint"
                     )
                 }
