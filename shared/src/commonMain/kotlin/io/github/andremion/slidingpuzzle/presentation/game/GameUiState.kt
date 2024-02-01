@@ -30,5 +30,10 @@ data class GameUiState(
     sealed interface Dialog {
         data object None : Dialog
         data class Goal(val board: Board) : Dialog
+        data class Congratulations(
+            val moves: String,
+            val time: String,
+            val board: Board
+        ) : Dialog
     }
 }

@@ -7,5 +7,5 @@ sealed interface GameUiEvent {
     data object ReplayClick : GameUiEvent
     data object HintClick : GameUiEvent
     data object GoalClick : GameUiEvent
-    data object DismissDialogClick : GameUiEvent
+    data class DismissDialogClick(val dialog: GameUiState.Dialog) : GameUiEvent
 }

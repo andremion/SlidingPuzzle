@@ -17,6 +17,8 @@ class Timer(
     private var timerJob: Job? = null
     private val isTicking: Boolean
         get() = timerJob?.isActive == true
+    val duration: Duration?
+        get() = startTime?.let { time -> Clock.System.now() - time }
 
     fun start(onTick: (duration: Duration) -> Unit) {
         if (startTime == null) {

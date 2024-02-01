@@ -17,6 +17,9 @@ class PuzzleGame(
     val goal: PuzzleState = initialState.getSolvableState()
         ?: error("Puzzle is not solvable")
 
+    val isSolved: Boolean
+        get() = state == goal
+
     fun move(tile: Int) {
         val blankPosition = state.getPosition(0)
         val tilePosition = state.getPosition(tile)

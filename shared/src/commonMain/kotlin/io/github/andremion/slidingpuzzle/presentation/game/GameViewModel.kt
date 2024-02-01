@@ -31,27 +31,12 @@ class GameViewModel : ViewModel() {
         when (event) {
             is GameUiEvent.TileClick -> {
                 runCatching { puzzleGame.move(tile = event.tile) }
-                    .onSuccess {
-                        timer.start(::onTimerTick)
-                        mutableState.update { uiState ->
-                            uiState.copy(
-                                moves = puzzleGame.moves.toString(),
-                                board = puzzleGame.state.transform(),
-                            )
-                        }
-                    }.onFailure {
-                        // Tile cannot be moved
-                    }
+                    .onSuccess { onTileMove() }
+                    .onFailure {/* Tile cannot be moved */ }
             }
 
             GameUiEvent.PauseClick -> {
-                timer.pause()
-                mutableState.update { uiState ->
-                    uiState.copy(
-                        fab = GameUiState.Fab.Resume,
-                        isPaused = true
-                    )
-                }
+                pause()
             }
 
             GameUiEvent.ResumeClick -> {
@@ -59,27 +44,14 @@ class GameViewModel : ViewModel() {
             }
 
             GameUiEvent.ReplayClick -> {
-                timer.stop()
-                puzzleGame = getSolvableGame()
-                mutableState.update {
-                    GameUiState(
-                        moves = puzzleGame.moves.toString(),
-                        board = puzzleGame.state.transform(),
-                    )
-                }
+                replay()
             }
 
             GameUiEvent.HintClick -> {
                 viewModelScope.launch {
                     val states = puzzleGame.solve()
-                    puzzleGame.replace(newState = states[1])
-                    mutableState.update { uiState ->
-                        uiState.copy(
-                            moves = puzzleGame.moves.toString(),
-                            board = puzzleGame.state.transform(),
-                        )
-                    }
-                    timer.start(::onTimerTick)
+                    puzzleGame.replace(newState = states[1]) // The first item is the current state
+                    onTileMove()
                 }
             }
 
@@ -93,7 +65,10 @@ class GameViewModel : ViewModel() {
                 }
             }
 
-            GameUiEvent.DismissDialogClick -> {
+            is GameUiEvent.DismissDialogClick -> {
+                if (event.dialog is GameUiState.Dialog.Congratulations) {
+                    replay()
+                }
                 mutableState.update { uiState ->
                     uiState.copy(
                         dialog = GameUiState.Dialog.None
@@ -103,12 +78,56 @@ class GameViewModel : ViewModel() {
         }
     }
 
+    private fun onTileMove() {
+        mutableState.update { uiState ->
+            uiState.copy(
+                moves = puzzleGame.moves.toString(),
+                board = puzzleGame.state.transform(),
+            )
+        }
+        if (puzzleGame.isSolved) {
+            pause()
+            mutableState.update { uiState ->
+                uiState.copy(
+                    dialog = GameUiState.Dialog.Congratulations(
+                        moves = puzzleGame.moves.toString(),
+                        time = timer.duration?.formatTime().orEmpty(),
+                        board = puzzleGame.state.transform(),
+                    )
+                )
+            }
+        } else {
+            timer.start(::onTimerTick)
+        }
+    }
+
     private fun onTimerTick(duration: Duration) {
         mutableState.update { uiState ->
             uiState.copy(
                 timer = duration.formatTime(),
                 fab = GameUiState.Fab.Pause,
                 isPaused = false
+            )
+        }
+    }
+
+    private fun pause() {
+        timer.pause()
+        mutableState.update { uiState ->
+            uiState.copy(
+                fab = GameUiState.Fab.Resume,
+                isPaused = true
+            )
+        }
+    }
+
+    private fun replay() {
+        timer.stop()
+        puzzleGame = getSolvableGame()
+        mutableState.update {
+            GameUiState(
+                moves = puzzleGame.moves.toString(),
+                board = puzzleGame.state.transform(),
             )
         }
     }

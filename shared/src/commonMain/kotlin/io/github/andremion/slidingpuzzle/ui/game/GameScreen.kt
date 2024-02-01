@@ -1,8 +1,10 @@
 package io.github.andremion.slidingpuzzle.ui.game
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -92,32 +94,22 @@ private fun ScreenContent(
             )
         }
     }
-    when (val hint = uiState.dialog) {
+    when (val dialog = uiState.dialog) {
         GameUiState.Dialog.None -> Unit
 
         is GameUiState.Dialog.Goal -> {
-            AlertDialog(
-                title = {
-                    Text(text = "This is your goal")
-                },
-                text = {
-                    PuzzleBoard(
-                        modifier = Modifier
-                            .size(150.dp),
-                        tiles = hint.board.tiles.map(GameUiState.Board.Tile::number),
-                        columns = hint.board.columns,
-                        tileTextStyle = MaterialTheme.typography.headlineSmall,
-                        isEnabled = false,
-                    )
-                },
-                onDismissRequest = { onUiEvent(GameUiEvent.DismissDialogClick) },
-                confirmButton = {
-                    Button(
-                        onClick = { onUiEvent(GameUiEvent.DismissDialogClick) }
-                    ) {
-                        Text(text = "Dismiss")
-                    }
-                },
+            GoalDialog(
+                board = dialog.board,
+                onDismiss = { onUiEvent(GameUiEvent.DismissDialogClick(dialog)) }
+            )
+        }
+
+        is GameUiState.Dialog.Congratulations -> {
+            CongratulationsDialog(
+                moves = dialog.moves,
+                time = dialog.time,
+                board = dialog.board,
+                onDismiss = { onUiEvent(GameUiEvent.DismissDialogClick(dialog)) }
             )
         }
     }
@@ -209,5 +201,82 @@ private fun BottomBar(
                 }
             }
         }
+    )
+}
+
+@Composable
+private fun GoalDialog(
+    board: GameUiState.Board,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        title = {
+            Text(text = "This is your goal")
+        },
+        text = {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                PuzzleBoard(
+                    modifier = Modifier
+                        .size(150.dp),
+                    tiles = board.tiles.map(GameUiState.Board.Tile::number),
+                    columns = board.columns,
+                    tileTextStyle = MaterialTheme.typography.headlineSmall,
+                    isEnabled = false,
+                )
+            }
+        },
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(
+                onClick = onDismiss
+            ) {
+                Text(text = "Dismiss")
+            }
+        },
+    )
+}
+
+@Composable
+private fun CongratulationsDialog(
+    moves: String,
+    time: String,
+    board: GameUiState.Board,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        title = {
+            Text(text = "Congratulations!!! 🎉🥳")
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                PuzzleDashboard(
+                    moves = moves,
+                    timer = time,
+                    isPaused = false
+                )
+                PuzzleBoard(
+                    modifier = Modifier
+                        .size(150.dp),
+                    tiles = board.tiles.map(GameUiState.Board.Tile::number),
+                    columns = board.columns,
+                    tileTextStyle = MaterialTheme.typography.headlineSmall,
+                    isEnabled = false,
+                )
+            }
+        },
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(
+                onClick = onDismiss
+            ) {
+                Text(text = "Dismiss")
+            }
+        },
     )
 }
