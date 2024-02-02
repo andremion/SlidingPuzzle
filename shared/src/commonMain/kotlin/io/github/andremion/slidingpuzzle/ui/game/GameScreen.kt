@@ -3,6 +3,7 @@ package io.github.andremion.slidingpuzzle.ui.game
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
@@ -67,7 +69,20 @@ private fun ScreenContent(
                 title = { Text(text = "Sliding Puzzle Game") },
             )
         },
-        bottomBar = { BottomBar(uiState.fab, onUiEvent) },
+        bottomBar = {
+            Column {
+                if (uiState.isBusy) {
+                    LinearProgressIndicator(
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                } else {
+                    Spacer(
+                        modifier = Modifier.size(4.dp) // The height of the LinearProgressIndicator
+                    )
+                }
+                BottomBar(uiState.fab, onUiEvent)
+            }
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         Column(

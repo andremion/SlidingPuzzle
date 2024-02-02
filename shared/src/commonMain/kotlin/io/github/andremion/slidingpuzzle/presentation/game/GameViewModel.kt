@@ -56,9 +56,15 @@ class GameViewModel : ViewModel() {
             }
 
             GameUiEvent.HintClick -> {
+                mutableState.update { uiState ->
+                    uiState.copy(isBusy = true)
+                }
                 viewModelScope.launch {
-                    // states will also contain the current state (first item) and the goal state (last item)
+                    // states also contain the current state (first item) and the goal state (last item)
                     val states = puzzleGame.solve()
+                    mutableState.update { uiState ->
+                        uiState.copy(isBusy = false)
+                    }
                     if (states.size > 1) {
                         puzzleGame.replace(newState = states[1])
                         if (states.size > 2) {
@@ -94,17 +100,13 @@ class GameViewModel : ViewModel() {
                     newGame()
                 }
                 mutableState.update { uiState ->
-                    uiState.copy(
-                        dialog = GameUiState.Dialog.None
-                    )
+                    uiState.copy(dialog = GameUiState.Dialog.None)
                 }
             }
 
             GameUiEvent.DismissSnackbar -> {
                 mutableState.update { uiState ->
-                    uiState.copy(
-                        snackbar = GameUiState.Snackbar.None
-                    )
+                    uiState.copy(snackbar = GameUiState.Snackbar.None)
                 }
             }
         }
@@ -126,7 +128,9 @@ class GameViewModel : ViewModel() {
                         board = uiState.board.copy(
                             isEnabled = false,
                         ),
-                    )
+                    ),
+                    fab = GameUiState.Fab.None,
+                    snackbar = GameUiState.Snackbar.None,
                 )
             }
         } else {

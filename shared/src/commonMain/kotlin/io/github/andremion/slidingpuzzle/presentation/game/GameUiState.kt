@@ -3,6 +3,7 @@ package io.github.andremion.slidingpuzzle.presentation.game
 import androidx.compose.runtime.Immutable
 
 data class GameUiState(
+    val isBusy: Boolean = false,
     val stats: Stats = Stats(),
     val board: Board = Board(),
     val fab: Fab = Fab.None,
