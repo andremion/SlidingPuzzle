@@ -8,7 +8,7 @@ A small Kotlin multiplatform game based on the [Sliding-Puzzle](https://en.wikip
 
 Android|iOS
 -|-
-<video src="https://github.com/andremion/SlidingPuzzle/assets/12762356/9d532321-d3fb-4f3c-b51e-72b92874e4ca" autoplay />|<video src="https://github.com/andremion/SlidingPuzzle/assets/12762356/299d6957-a0e8-4fa9-90c8-8ebb77248dd4" autoplay />
+<video src="https://github.com/andremion/SlidingPuzzle/assets/12762356/6e677664-239f-4de0-a590-186c34a07020" autoplay />|<video src="https://github.com/andremion/SlidingPuzzle/assets/12762356/5eb51413-31e7-41a1-97bc-bd15008473ab" autoplay />
 
 </div>
 
