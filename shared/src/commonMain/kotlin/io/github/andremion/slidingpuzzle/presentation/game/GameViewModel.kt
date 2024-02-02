@@ -57,9 +57,19 @@ class GameViewModel : ViewModel() {
 
             GameUiEvent.HintClick -> {
                 viewModelScope.launch {
+                    // states will also contain the current state (first item) and the goal state (last item)
                     val states = puzzleGame.solve()
                     if (states.size > 1) {
-                        puzzleGame.replace(newState = states[1]) // The first item is the current state
+                        puzzleGame.replace(newState = states[1])
+                        if (states.size > 2) {
+                            mutableState.update { uiState ->
+                                uiState.copy(
+                                    snackbar = GameUiState.Snackbar.MovesAwayFromGoal(
+                                        moves = states.size - 2
+                                    )
+                                )
+                            }
+                        }
                     }
                     onTileMove()
                 }
@@ -86,6 +96,14 @@ class GameViewModel : ViewModel() {
                 mutableState.update { uiState ->
                     uiState.copy(
                         dialog = GameUiState.Dialog.None
+                    )
+                }
+            }
+
+            GameUiEvent.DismissSnackbar -> {
+                mutableState.update { uiState ->
+                    uiState.copy(
+                        snackbar = GameUiState.Snackbar.None
                     )
                 }
             }

@@ -8,4 +8,5 @@ sealed interface GameUiEvent {
     data object HintClick : GameUiEvent
     data object GoalClick : GameUiEvent
     data class DismissDialogClick(val dialog: GameUiState.Dialog) : GameUiEvent
+    data object DismissSnackbar : GameUiEvent
 }

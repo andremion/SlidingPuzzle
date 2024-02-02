@@ -25,9 +25,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltipBox
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -56,13 +60,15 @@ private fun ScreenContent(
     uiState: GameUiState,
     onUiEvent: (GameUiEvent) -> Unit
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(text = "Sliding Puzzle Game") },
             )
         },
-        bottomBar = { BottomBar(uiState.fab, onUiEvent) }
+        bottomBar = { BottomBar(uiState.fab, onUiEvent) },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -105,6 +111,18 @@ private fun ScreenContent(
                 board = dialog.board,
                 onDismiss = { onUiEvent(GameUiEvent.DismissDialogClick(dialog)) }
             )
+        }
+    }
+    LaunchedEffect(uiState.snackbar) {
+        when (uiState.snackbar) {
+            GameUiState.Snackbar.None -> Unit
+
+            is GameUiState.Snackbar.MovesAwayFromGoal -> {
+                snackbarHostState.showSnackbar(
+                    message = "Your goal is ${uiState.snackbar.moves} moves away",
+                )
+                onUiEvent(GameUiEvent.DismissSnackbar)
+            }
         }
     }
 }
