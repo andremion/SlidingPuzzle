@@ -28,9 +28,9 @@ class GameViewModel : ViewModel() {
         )
 
     init {
-        mutableState.update {
-            GameUiState(
-                board = puzzleGame.state.transform(),
+        mutableState.update { uiState ->
+            uiState.copy(
+                board = uiState.board.copy(tiles = puzzleGame.state.tiles),
             )
         }
     }
@@ -69,7 +69,11 @@ class GameViewModel : ViewModel() {
                 mutableState.update { uiState ->
                     uiState.copy(
                         dialog = GameUiState.Dialog.Goal(
-                            board = puzzleGame.goal.transform()
+                            board = GameUiState.Board(
+                                tiles = puzzleGame.goal.tiles,
+                                columns = puzzleGame.goal.matrixSize,
+                                isEnabled = false,
+                            )
                         )
                     )
                 }
@@ -91,8 +95,8 @@ class GameViewModel : ViewModel() {
     private fun onTileMove() {
         mutableState.update { uiState ->
             uiState.copy(
-                stats = GameUiState.Stats(moves = puzzleGame.moves.toString()),
-                board = puzzleGame.state.transform(),
+                stats = uiState.stats.copy(moves = puzzleGame.moves.toString()),
+                board = uiState.board.copy(tiles = puzzleGame.state.tiles),
             )
         }
         if (puzzleGame.isSolved) {
@@ -100,9 +104,10 @@ class GameViewModel : ViewModel() {
             mutableState.update { uiState ->
                 uiState.copy(
                     dialog = GameUiState.Dialog.Congratulations(
-                        moves = puzzleGame.moves.toString(),
-                        time = timer.duration?.formatTime().orEmpty(),
-                        board = puzzleGame.state.transform(),
+                        stats = uiState.stats,
+                        board = uiState.board.copy(
+                            isEnabled = false,
+                        ),
                     )
                 )
             }
@@ -114,7 +119,7 @@ class GameViewModel : ViewModel() {
     private fun onTimerTick(duration: Duration) {
         mutableState.update { uiState ->
             uiState.copy(
-                stats = GameUiState.Stats(
+                stats = uiState.stats.copy(
                     timer = duration.formatTime(),
                     isPaused = false,
                 ),
@@ -127,7 +132,7 @@ class GameViewModel : ViewModel() {
         timer.pause()
         mutableState.update { uiState ->
             uiState.copy(
-                stats = GameUiState.Stats(isPaused = true),
+                stats = uiState.stats.copy(isPaused = true),
                 fab = GameUiState.Fab.Resume,
             )
         }
@@ -138,8 +143,11 @@ class GameViewModel : ViewModel() {
         puzzleGame = getSolvableGame()
         mutableState.update {
             GameUiState(
-                stats = GameUiState.Stats(),
-                board = puzzleGame.state.transform(),
+                board = GameUiState.Board(
+                    tiles = puzzleGame.state.tiles,
+                    columns = puzzleGame.state.matrixSize,
+                    isEnabled = true,
+                ),
             )
         }
     }

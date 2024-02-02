@@ -29,7 +29,7 @@ import io.github.andremion.slidingpuzzle.ui.component.VerticalDivider
 fun PuzzleStats(
     moves: String,
     timer: String,
-    isPaused: Boolean
+    blinkTimer: Boolean
 ) {
     Row(
         modifier = Modifier
@@ -49,7 +49,7 @@ fun PuzzleStats(
                 .padding(vertical = 8.dp)
                 .weight(1f),
             timer = timer,
-            isPaused = isPaused
+            blink = blinkTimer
         )
     }
 }
@@ -78,12 +78,12 @@ private fun Moves(
 private fun Timer(
     modifier: Modifier,
     timer: String,
-    isPaused: Boolean
+    blink: Boolean
 ) {
-    val infiniteTransition = rememberInfiniteTransition(label = "TimerPaused")
+    val infiniteTransition = rememberInfiniteTransition(label = "BlinkingTimer")
     val animatedAlpha by infiniteTransition.animateFloat(
         initialValue = 1f,
-        targetValue = if (isPaused) 0.2f else 1f,
+        targetValue = if (blink) 0.2f else 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 800, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse

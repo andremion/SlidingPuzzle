@@ -77,12 +77,12 @@ private fun ScreenContent(
             PuzzleStats(
                 moves = uiState.stats.moves,
                 timer = uiState.stats.timer,
-                isPaused = uiState.stats.isPaused
+                blinkTimer = uiState.stats.isPaused
             )
             PuzzleBoard(
                 modifier = Modifier
                     .size(300.dp),
-                tiles = uiState.board.tiles.map(GameUiState.Board.Tile::number),
+                tiles = uiState.board.tiles,
                 columns = uiState.board.columns,
                 tileTextStyle = MaterialTheme.typography.headlineLarge,
                 onClick = { tile -> onUiEvent(GameUiEvent.TileClick(tile)) }
@@ -101,8 +101,7 @@ private fun ScreenContent(
 
         is GameUiState.Dialog.Congratulations -> {
             CongratulationsDialog(
-                moves = dialog.moves,
-                time = dialog.time,
+                stats = dialog.stats,
                 board = dialog.board,
                 onDismiss = { onUiEvent(GameUiEvent.DismissDialogClick(dialog)) }
             )
@@ -216,7 +215,7 @@ private fun GoalDialog(
                 PuzzleBoard(
                     modifier = Modifier
                         .size(150.dp),
-                    tiles = board.tiles.map(GameUiState.Board.Tile::number),
+                    tiles = board.tiles,
                     columns = board.columns,
                     tileTextStyle = MaterialTheme.typography.headlineSmall,
                     isEnabled = false,
@@ -236,8 +235,7 @@ private fun GoalDialog(
 
 @Composable
 private fun CongratulationsDialog(
-    moves: String,
-    time: String,
+    stats: GameUiState.Stats,
     board: GameUiState.Board,
     onDismiss: () -> Unit
 ) {
@@ -251,17 +249,17 @@ private fun CongratulationsDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 PuzzleStats(
-                    moves = moves,
-                    timer = time,
-                    isPaused = false
+                    moves = stats.moves,
+                    timer = stats.timer,
+                    blinkTimer = false
                 )
                 PuzzleBoard(
                     modifier = Modifier
                         .size(150.dp),
-                    tiles = board.tiles.map(GameUiState.Board.Tile::number),
+                    tiles = board.tiles,
                     columns = board.columns,
                     tileTextStyle = MaterialTheme.typography.headlineSmall,
-                    isEnabled = false,
+                    isEnabled = board.isEnabled,
                 )
             }
         },

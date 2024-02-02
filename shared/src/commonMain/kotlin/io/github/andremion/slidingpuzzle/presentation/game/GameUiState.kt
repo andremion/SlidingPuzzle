@@ -17,14 +17,10 @@ data class GameUiState(
     )
 
     data class Board(
-        val tiles: List<Tile> = List(9, ::Tile),
+        val tiles: List<Int> = List(9) { it },
         val columns: Int = 3,
         val isEnabled: Boolean = true,
-    ) {
-        data class Tile(
-            val number: Int,
-        )
-    }
+    )
 
     sealed interface Fab {
         data object None : Fab
@@ -36,8 +32,7 @@ data class GameUiState(
         data object None : Dialog
         data class Goal(val board: Board) : Dialog
         data class Congratulations(
-            val moves: String,
-            val time: String,
+            val stats: Stats,
             val board: Board
         ) : Dialog
     }
