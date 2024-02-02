@@ -2,7 +2,7 @@
 
 # Sliding-Puzzle Game
 
-A small Kotlin multiplatform game based on the [Sliding-Puzzle](https://en.wikipedia.org/wiki/15_puzzle) problem.
+A Kotlin multiplatform puzzle game based on the [Sliding-Puzzle](https://en.wikipedia.org/wiki/15_puzzle) problem that uses [A* search algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm) to solve it.
 
 <div align=center >
 
