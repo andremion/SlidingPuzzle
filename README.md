@@ -1,6 +1,16 @@
-# N-Puzzle Game
+<a target=_blank href='https://play.google.com/store/apps/details?id=io.github.andremion.slidingpuzzle.android'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height=48 align=right /></a>
+
+# Sliding-Puzzle Game
 
 A small Kotlin multiplatform game based on the [Sliding-Puzzle](https://en.wikipedia.org/wiki/15_puzzle) problem.
+
+<div align=center >
+
+Android|iOS
+-|-
+<video src="https://github.com/andremion/SlidingPuzzle/assets/12762356/9d532321-d3fb-4f3c-b51e-72b92874e4ca" autoplay />|<video src="https://github.com/andremion/SlidingPuzzle/assets/12762356/299d6957-a0e8-4fa9-90c8-8ebb77248dd4" autoplay />
+
+</div>
 
 ## References
 
