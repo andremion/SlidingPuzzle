@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import io.github.andremion.slidingpuzzle.ui.component.VerticalDivider
 
 @Composable
-fun PuzzleDashboard(
+fun PuzzleStats(
     moves: String,
     timer: String,
     isPaused: Boolean

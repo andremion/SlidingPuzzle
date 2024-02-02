@@ -30,7 +30,6 @@ class GameViewModel : ViewModel() {
     init {
         mutableState.update {
             GameUiState(
-                moves = puzzleGame.moves.toString(),
                 board = puzzleGame.state.transform(),
             )
         }
@@ -92,7 +91,7 @@ class GameViewModel : ViewModel() {
     private fun onTileMove() {
         mutableState.update { uiState ->
             uiState.copy(
-                moves = puzzleGame.moves.toString(),
+                stats = GameUiState.Stats(moves = puzzleGame.moves.toString()),
                 board = puzzleGame.state.transform(),
             )
         }
@@ -115,9 +114,11 @@ class GameViewModel : ViewModel() {
     private fun onTimerTick(duration: Duration) {
         mutableState.update { uiState ->
             uiState.copy(
-                timer = duration.formatTime(),
+                stats = GameUiState.Stats(
+                    timer = duration.formatTime(),
+                    isPaused = false,
+                ),
                 fab = GameUiState.Fab.Pause,
-                isPaused = false
             )
         }
     }
@@ -126,8 +127,8 @@ class GameViewModel : ViewModel() {
         timer.pause()
         mutableState.update { uiState ->
             uiState.copy(
+                stats = GameUiState.Stats(isPaused = true),
                 fab = GameUiState.Fab.Resume,
-                isPaused = true
             )
         }
     }
@@ -137,7 +138,7 @@ class GameViewModel : ViewModel() {
         puzzleGame = getSolvableGame()
         mutableState.update {
             GameUiState(
-                moves = puzzleGame.moves.toString(),
+                stats = GameUiState.Stats(),
                 board = puzzleGame.state.transform(),
             )
         }

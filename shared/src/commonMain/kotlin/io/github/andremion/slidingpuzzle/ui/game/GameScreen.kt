@@ -74,10 +74,10 @@ private fun ScreenContent(
                 alignment = Alignment.CenterVertically
             ),
         ) {
-            PuzzleDashboard(
-                moves = uiState.moves,
-                timer = uiState.timer,
-                isPaused = uiState.isPaused
+            PuzzleStats(
+                moves = uiState.stats.moves,
+                timer = uiState.stats.timer,
+                isPaused = uiState.stats.isPaused
             )
             PuzzleBoard(
                 modifier = Modifier
@@ -250,7 +250,7 @@ private fun CongratulationsDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                PuzzleDashboard(
+                PuzzleStats(
                     moves = moves,
                     timer = time,
                     isPaused = false

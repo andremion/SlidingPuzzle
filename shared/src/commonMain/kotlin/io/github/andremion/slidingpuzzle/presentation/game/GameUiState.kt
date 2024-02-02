@@ -4,13 +4,18 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class GameUiState(
-    val moves: String = "0",
-    val timer: String = "00:00:00",
-    val isPaused: Boolean = false,
+    val stats: Stats = Stats(),
     val board: Board = Board(),
     val fab: Fab = Fab.None,
     val dialog: Dialog = Dialog.None,
 ) {
+
+    data class Stats(
+        val moves: String = "0",
+        val timer: String = "00:00:00",
+        val isPaused: Boolean = false,
+    )
+
     data class Board(
         val tiles: List<Tile> = List(9, ::Tile),
         val columns: Int = 3,
