@@ -24,7 +24,10 @@ android {
         val releaseKeyStoreAlias: String? by project
         val releaseKeyStorePassword: String? by project
         create("release") {
-            storeFile = file(releaseKeyStoreFile ?: System.getenv("releaseKeyStoreFile") ?: default)
+            val storeFilePath = releaseKeyStoreFile ?: System.getenv("releaseKeyStoreFile") ?: default
+            if (storeFilePath != default) {
+                storeFile = file(storeFilePath)
+            }
             storePassword = releaseKeyStorePassword ?: System.getenv("releaseKeyStorePassword") ?: default
             keyAlias = releaseKeyStoreAlias ?: System.getenv("releaseKeyStoreAlias") ?: default
             keyPassword = releaseKeyStorePassword ?: System.getenv("releaseKeyStorePassword") ?: default
