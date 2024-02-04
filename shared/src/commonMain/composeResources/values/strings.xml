@@ -1,0 +1,13 @@
+<resources>
+    <string name="game_title" translatable="false">Sliding Puzzle Game</string>
+    <string name="game_hint_button">Hint</string>
+    <string name="game_goal_button">Goal</string>
+    <string name="game_replay_button">Replay</string>
+    <string name="game_resume_button">Resume timer</string>
+    <string name="game_pause_button">Pause timer</string>
+    <string name="game_stats_timer_label">Timer</string>
+    <string name="game_moves_away_message">The goal is %1$d moves away</string>
+    <string name="game_dialog_dismiss_button">OK</string>
+    <string name="game_dialog_goal_title">The goal is to reach this state</string>
+    <string name="game_dialog_congratulations_title">Congratulations!!! 🎉🥳</string>
+</resources>

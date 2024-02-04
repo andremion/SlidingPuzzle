@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
+@file:OptIn(ExperimentalResourceApi::class)
+
 package io.github.andremion.slidingpuzzle.ui.game
 
 import androidx.compose.foundation.layout.Arrangement
@@ -41,11 +43,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PlainTooltipBox
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -59,6 +64,9 @@ import io.github.andremion.slidingpuzzle.presentation.game.GameViewModel
 import io.github.andremion.slidingpuzzle.ui.animation.FadeAnimatedVisibility
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
+import slidingpuzzle.shared.generated.resources.Res
 
 @Composable
 fun GameScreen() {
@@ -82,7 +90,7 @@ private fun ScreenContent(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "Sliding Puzzle Game") },
+                title = { Text(text = stringResource(Res.string.game_title)) },
             )
         },
         bottomBar = {
@@ -167,83 +175,92 @@ private fun BottomBar(
     BottomAppBar(
         actions = {
             PlainTooltipBox(
-                tooltip = { Text(text = "Hint") }
+                tooltip = { Text(text = stringResource(Res.string.game_hint_button)) },
             ) {
                 IconButton(
-                    modifier = Modifier.tooltipAnchor(),
                     onClick = { onUiEvent(GameUiEvent.HintClick) }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Lightbulb,
-                        contentDescription = "Hint"
+                        contentDescription = stringResource(Res.string.game_hint_button)
                     )
                 }
             }
             PlainTooltipBox(
-                tooltip = { Text(text = "Goal") }
+                tooltip = { Text(text = stringResource(Res.string.game_goal_button)) }
             ) {
                 IconButton(
-                    modifier = Modifier.tooltipAnchor(),
                     onClick = { onUiEvent(GameUiEvent.GoalClick) }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Flag,
-                        contentDescription = "Goal"
+                        contentDescription = stringResource(Res.string.game_goal_button)
                     )
                 }
             }
             PlainTooltipBox(
-                tooltip = { Text(text = "Replay") }
+                tooltip = { Text(text = stringResource(Res.string.game_replay_button)) }
             ) {
                 IconButton(
-                    modifier = Modifier.tooltipAnchor(),
                     onClick = { onUiEvent(GameUiEvent.ReplayClick) }
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Replay,
-                        contentDescription = "Replay"
+                        contentDescription = stringResource(Res.string.game_replay_button)
                     )
                 }
             }
         },
         floatingActionButton = {
             PlainTooltipBox(
-                tooltip = { Text(text = "Resume timer") }
+                tooltip = { Text(text = stringResource(Res.string.game_resume_button)) }
             ) {
                 FadeAnimatedVisibility(
                     isVisible = fab == GameUiState.Fab.Resume,
                 ) {
                     FloatingActionButton(
-                        modifier = Modifier.tooltipAnchor(),
                         elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
                         onClick = { onUiEvent(GameUiEvent.ResumeClick) }
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.PlayArrow,
-                            contentDescription = "Resume timer"
+                            contentDescription = stringResource(Res.string.game_resume_button)
                         )
                     }
                 }
             }
             PlainTooltipBox(
-                tooltip = { Text(text = "Pause timer") }
+                tooltip = { Text(text = stringResource(Res.string.game_pause_button)) }
             ) {
                 FadeAnimatedVisibility(
                     isVisible = fab == GameUiState.Fab.Pause,
                 ) {
                     FloatingActionButton(
-                        modifier = Modifier.tooltipAnchor(),
                         elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
                         onClick = { onUiEvent(GameUiEvent.PauseClick) }
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Pause,
-                            contentDescription = "Pause timer"
+                            contentDescription = stringResource(Res.string.game_pause_button)
                         )
                     }
                 }
             }
         }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PlainTooltipBox(
+    tooltip: @Composable () -> Unit,
+    content: @Composable () -> Unit
+) {
+    TooltipBox(
+        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+        tooltip = { PlainTooltip { tooltip() } },
+        state = rememberTooltipState(),
+        content = content
     )
 }
 
@@ -254,7 +271,7 @@ private fun GoalDialog(
 ) {
     AlertDialog(
         title = {
-            Text(text = "This is your goal")
+            Text(text = stringResource(Res.string.game_dialog_goal_title))
         },
         text = {
             Box(
@@ -276,7 +293,7 @@ private fun GoalDialog(
             Button(
                 onClick = onDismiss
             ) {
-                Text(text = "Dismiss")
+                Text(text = stringResource(Res.string.game_dialog_dismiss_button))
             }
         },
     )
@@ -290,7 +307,7 @@ private fun CongratulationsDialog(
 ) {
     AlertDialog(
         title = {
-            Text(text = "Congratulations!!! 🎉🥳")
+            Text(text = stringResource(Res.string.game_dialog_congratulations_title))
         },
         text = {
             Column(
@@ -317,7 +334,7 @@ private fun CongratulationsDialog(
             Button(
                 onClick = onDismiss
             ) {
-                Text(text = "Dismiss")
+                Text(text = stringResource(Res.string.game_dialog_dismiss_button))
             }
         },
     )

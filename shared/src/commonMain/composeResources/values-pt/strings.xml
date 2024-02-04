@@ -1,0 +1,12 @@
+<resources>
+    <string name="game_hint_button">Dica</string>
+    <string name="game_goal_button">Objetivo</string>
+    <string name="game_replay_button">Replay</string>
+    <string name="game_resume_button">Resumir contador</string>
+    <string name="game_pause_button">Pausar contador</string>
+    <string name="game_stats_timer_label">Contador</string>
+    <string name="game_moves_away_message">O objetivo está a %1$d movimentos de distância</string>
+    <string name="game_dialog_dismiss_button">OK</string>
+    <string name="game_dialog_goal_title">O objetivo é alcançar este estado</string>
+    <string name="game_dialog_congratulations_title">Parabéns!!! 🎉🥳</string>
+</resources>

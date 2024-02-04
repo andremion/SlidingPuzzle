@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 
+@file:OptIn(ExperimentalResourceApi::class)
+
 package io.github.andremion.slidingpuzzle.ui.game
 
 import androidx.compose.animation.core.LinearEasing
@@ -34,13 +36,16 @@ import androidx.compose.material.icons.rounded.Numbers
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
-import io.github.andremion.slidingpuzzle.ui.component.VerticalDivider
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
+import slidingpuzzle.shared.generated.resources.Res
 
 @Composable
 fun PuzzleStats(
@@ -115,7 +120,7 @@ private fun Timer(
     ) {
         Icon(
             imageVector = Icons.Outlined.Timer,
-            contentDescription = "Timer"
+            contentDescription = stringResource(Res.string.game_stats_timer_label)
         )
         Text(
             text = timer,
