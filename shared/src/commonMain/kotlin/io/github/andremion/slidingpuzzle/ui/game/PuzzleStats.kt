@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.rounded.Numbers
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -69,7 +70,8 @@ private fun Moves(
             contentDescription = "Moves"
         )
         Text(
-            text = moves
+            text = moves,
+            style = MaterialTheme.typography.titleLarge
         )
     }
 }
@@ -100,7 +102,8 @@ private fun Timer(
             contentDescription = "Timer"
         )
         Text(
-            text = timer
+            text = timer,
+            style = MaterialTheme.typography.titleLarge
         )
     }
 }

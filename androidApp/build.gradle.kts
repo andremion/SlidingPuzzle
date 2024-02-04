@@ -18,6 +18,7 @@ android {
             useSupportLibrary = true
         }
     }
+
     val releaseKeyStoreFile = properties["releaseKeyStoreFile"]?.toString()
         ?: System.getenv("releaseKeyStoreFile")
     val releaseKeyStoreAlias = properties["releaseKeyStoreAlias"]?.toString()
@@ -26,6 +27,7 @@ android {
         ?: System.getenv("releaseKeyStorePassword")
     val releaseKeysProvided =
         releaseKeyStoreFile != null && releaseKeyStoreAlias != null && releaseKeyStorePassword != null
+
     signingConfigs {
         if (releaseKeysProvided) {
             create("release") {
