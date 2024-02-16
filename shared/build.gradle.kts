@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.jetbrainsCompose)
 }
 
 kotlin {
@@ -28,6 +28,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
+            implementation(compose.components.resources)
 
             implementation(libs.kotlinx.coroutines)
             implementation(libs.kotlinx.datetime)
