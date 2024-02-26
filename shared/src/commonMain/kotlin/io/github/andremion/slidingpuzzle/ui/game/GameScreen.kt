@@ -65,8 +65,19 @@ import io.github.andremion.slidingpuzzle.ui.animation.FadeAnimatedVisibility
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import slidingpuzzle.shared.generated.resources.Res
+import slidingpuzzle.shared.generated.resources.game_dialog_congratulations_title
+import slidingpuzzle.shared.generated.resources.game_dialog_dismiss_button
+import slidingpuzzle.shared.generated.resources.game_dialog_goal_title
+import slidingpuzzle.shared.generated.resources.game_goal_button
+import slidingpuzzle.shared.generated.resources.game_hint_button
+import slidingpuzzle.shared.generated.resources.game_moves_away_message
+import slidingpuzzle.shared.generated.resources.game_pause_button
+import slidingpuzzle.shared.generated.resources.game_replay_button
+import slidingpuzzle.shared.generated.resources.game_resume_button
+import slidingpuzzle.shared.generated.resources.game_title
 
 @Composable
 fun GameScreen() {
@@ -158,7 +169,7 @@ private fun ScreenContent(
 
             is GameUiState.Snackbar.MovesAwayFromGoal -> {
                 snackbarHostState.showSnackbar(
-                    message = "Your goal is ${uiState.snackbar.moves} moves away",
+                    message = getString(Res.string.game_moves_away_message, uiState.snackbar.moves),
                 )
                 onUiEvent(GameUiEvent.DismissSnackbar)
             }
@@ -166,7 +177,6 @@ private fun ScreenContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BottomBar(
     fab: GameUiState.Fab,
