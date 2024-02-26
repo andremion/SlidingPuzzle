@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import slidingpuzzle.shared.generated.resources.Res
+import slidingpuzzle.shared.generated.resources.game_stats_timer_label
 
 @Composable
 fun PuzzleStats(
