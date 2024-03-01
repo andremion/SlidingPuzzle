@@ -35,7 +35,6 @@ import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material.icons.rounded.Numbers
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import slidingpuzzle.shared.generated.resources.Res
+import slidingpuzzle.shared.generated.resources.game_stats_moves_label
 import slidingpuzzle.shared.generated.resources.game_stats_timer_label
 
 @Composable
@@ -89,9 +89,9 @@ private fun Moves(
     ) {
         Icon(
             imageVector = Icons.Rounded.Numbers,
-            contentDescription = "Moves"
+            contentDescription = stringResource(Res.string.game_stats_moves_label)
         )
-        Text(
+        AnimatedText(
             text = moves,
             style = MaterialTheme.typography.titleLarge
         )
@@ -123,7 +123,7 @@ private fun Timer(
             imageVector = Icons.Outlined.Timer,
             contentDescription = stringResource(Res.string.game_stats_timer_label)
         )
-        Text(
+        AnimatedText(
             text = timer,
             style = MaterialTheme.typography.titleLarge
         )
