@@ -1,4 +1,8 @@
+<img alt="SlidingPuzzle icon" src="https://github.com/andremion/SlidingPuzzle/blob/main/androidApp/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" width=100 align=left>
+
 <a target=_blank href='https://play.google.com/store/apps/details?id=io.github.andremion.slidingpuzzle.android'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height=48 align=right /></a>
+
+</br>
 
 # Sliding-Puzzle Game
 
